@@ -151,7 +151,7 @@ app.get('/verify-email', async (req, res) => {
     await user.save();
 
     // Redirect user to the home page after verification
-    res.redirect('http://localhost:5173/home');
+    res.redirect('/home');
   } catch (error) {
     res.status(500).send('Server error');
   }

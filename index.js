@@ -85,7 +85,7 @@ app.post('/register', async (req, res) => {
     const token = jwt.sign({ userId: savedUser._id }, jwtSecretKey, { expiresIn: '1h' });
 
     // Send verification email
-    const verificationLink = `http://localhost:${PORT}/verify-email?token=${token}`;
+    const verificationLink = `https://271project.netlify.app/verify-email?token=${token}`;
     await transporter.sendMail({
       from: 'dalaibrahim10@gmail.com@gmail.com',
       to: savedUser.email,

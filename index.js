@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const nodemailer = require('nodemailer');
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
 const User = require('./models/User');
 const app = express();
 app.use(express.json()); // To parse JSON bodies
@@ -57,15 +56,13 @@ app.post('/register', async (req, res) => {
           }
       }
     // Hash the password
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
 
     user = new User({
       firstName,
       lastName,
       username,
       email,
-      password: hashedPassword,
+      password: password,
       emailVerified: false,
     });
 
@@ -102,6 +99,10 @@ app.post('/register', async (req, res) => {
   }
 });
 
+async function comparePasswords(plainPassword, storedPassword) {
+  return plainPassword === storedPassword;
+}
+
 
 // LOGIN ----------------------------------------------------------------------------------------------------------------------
 app.post('/login', async (req, res) => {
@@ -113,7 +114,7 @@ app.post('/login', async (req, res) => {
       return res.status(400).json({ message: 'Account does not exist.' });
     }
 
-    const isMatch = await bcrypt.compare(password, user.password);
+    const isMatch = await comparePasswords(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ message: 'Invalid credentials.' });
     }
